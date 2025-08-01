@@ -6,16 +6,9 @@ from typing import Dict, List, Tuple, Optional
 import time
 
 from graph_algorithms.floyd_warshall_algorithm import floyd_warshall_algorithm
-
-try:
-    from algorithms.bfs import bfs_algorithm
-    from algorithms.dfs import dfs_algorithm
-    from algorithms.dijkstra import dijkstra_algorithm
-except ImportError:
-    st.warning("Algorithm modules not found. Please implement the algorithms in the 'algorithms' directory.")
-    bfs_algorithm = None
-    dfs_algorithm = None
-    dijkstra_algorithm = None
+from graph_algorithms.bfs import bfs_algorithm
+from graph_algorithms.dfs import dfs_algorithm
+from graph_algorithms.dijkstra import dijkstra_algorithm
 
 
 class GraphVisualizer:
