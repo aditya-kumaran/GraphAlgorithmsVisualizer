@@ -1,0 +1,772 @@
+From 662366c7f9546f0899838b09b4ca21d497576565 Mon Sep 17 00:00:00 2001
+From: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>
+Date: Fri, 1 Aug 2025 01:56:08 +0000
+Subject: [PATCH] Initial commit: Graph Algorithm Visualizer Streamlit app
+
+- Interactive graph visualization with BFS, DFS, and Dijkstra algorithms
+- Modular structure with separate algorithm modules for easy customization
+- Support for multiple graph types: Grid, Random, Complete, Tree, Custom
+- Professional Streamlit interface with real-time algorithm execution
+- Ready for custom algorithm implementations in algorithms/ directory
+
+Co-Authored-By: akumaran36@gmail.com <akumaran36@gmail.com>
+---
+ README.md                                     | 117 +++++++
+ algorithms/__pycache__/bfs.cpython-312.pyc    | Bin 0 -> 1906 bytes
+ algorithms/__pycache__/dfs.cpython-312.pyc    | Bin 0 -> 2140 bytes
+ .../__pycache__/dijkstra.cpython-312.pyc      | Bin 0 -> 2658 bytes
+ algorithms/bfs.py                             |  51 ++++
+ algorithms/dfs.py                             |  57 ++++
+ algorithms/dijkstra.py                        |  77 +++++
+ app.py                                        | 287 ++++++++++++++++++
+ requirements.txt                              |   4 +
+ 9 files changed, 593 insertions(+)
+ create mode 100644 README.md
+ create mode 100644 algorithms/__pycache__/bfs.cpython-312.pyc
+ create mode 100644 algorithms/__pycache__/dfs.cpython-312.pyc
+ create mode 100644 algorithms/__pycache__/dijkstra.cpython-312.pyc
+ create mode 100644 algorithms/bfs.py
+ create mode 100644 algorithms/dfs.py
+ create mode 100644 algorithms/dijkstra.py
+ create mode 100644 app.py
+ create mode 100644 requirements.txt
+
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..ab72bd6
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1,117 @@
++# Graph Algorithm Visualizer
++
++A Streamlit web application for visualizing graph algorithms including BFS (Breadth-First Search), DFS (Depth-First Search), and Dijkstra's Algorithm.
++
++## Features
++
++- **Interactive Graph Creation**: Generate different types of graphs (Grid, Random, Complete, Tree) or build custom graphs
++- **Algorithm Visualization**: Visualize the execution of BFS, DFS, and Dijkstra's algorithms
++- **Real-time Results**: See visited nodes, tree edges, shortest paths, and algorithm metrics
++- **Modular Design**: Easy to extend with additional algorithms
++
++## Installation
++
++1. Install the required dependencies:
++```bash
++pip install -r requirements.txt
++```
++
++2. Run the Streamlit application:
++```bash
++streamlit run app.py
++```
++
++## Project Structure
++
++```
++graph_visualizer/
++├── app.py                 # Main Streamlit application
++├── algorithms/            # Algorithm implementations
++│   ├── __init__.py
++│   ├── bfs.py            # BFS algorithm
++│   ├── dfs.py            # DFS algorithm
++│   └── dijkstra.py       # Dijkstra's algorithm
++├── requirements.txt       # Python dependencies
++└── README.md             # This file
++```
++
++## Algorithm Modules
++
++The application is designed with a modular structure where each algorithm is implemented in its own module:
++
++### BFS Algorithm (`algorithms/bfs.py`)
++- Function: `bfs_algorithm(graph, start_node)`
++- Returns: Dictionary with `visited_order`, `tree_edges`, and `distances`
++
++### DFS Algorithm (`algorithms/dfs.py`)
++- Function: `dfs_algorithm(graph, start_node)`
++- Returns: Dictionary with `visited_order`, `tree_edges`, `discovery_time`, and `finish_time`
++
++### Dijkstra's Algorithm (`algorithms/dijkstra.py`)
++- Function: `dijkstra_algorithm(graph, start_node, end_node)`
++- Returns: Dictionary with `shortest_path`, `path_length`, `distances`, and `previous`
++
++## Usage
++
++1. **Select Graph Type**: Choose from predefined graph types or create a custom graph
++2. **Generate Graph**: Click "Generate New Graph" to create a new graph structure
++3. **Choose Algorithm**: Select BFS, DFS, or Dijkstra's algorithm
++4. **Set Parameters**: Choose start node (and end node for Dijkstra's)
++5. **Run Algorithm**: Click "Run Algorithm" to execute and visualize the results
++
++## Customization
++
++### Adding New Algorithms
++
++1. Create a new Python file in the `algorithms/` directory
++2. Implement your algorithm function following the same pattern
++3. Import and integrate it into the main `app.py` file
++
++### Modifying Visualizations
++
++The `GraphVisualizer` class in `app.py` handles all graph drawing. You can customize:
++- Node colors and sizes
++- Edge colors and weights
++- Layout algorithms
++- Additional visual elements
++
++## Graph Types
++
++- **Grid**: 5x5 grid graph
++- **Random**: Erdős–Rényi random graph
++- **Complete**: Complete graph with all possible edges
++- **Tree**: Balanced tree structure
++- **Custom**: Build your own graph by adding nodes and edges
++
++## Algorithm Information
++
++### BFS (Breadth-First Search)
++- Explores nodes level by level
++- Time complexity: O(V + E)
++- Space complexity: O(V)
++- Finds shortest path in unweighted graphs
++
++### DFS (Depth-First Search)
++- Explores as far as possible along each branch
++- Time complexity: O(V + E)
++- Space complexity: O(V)
++- Good for topological sorting and cycle detection
++
++### Dijkstra's Algorithm
++- Finds shortest paths with non-negative edge weights
++- Time complexity: O((V + E) log V)
++- Space complexity: O(V)
++- Works on weighted graphs
++
++## Contributing
++
++Feel free to extend this application by:
++- Adding new graph algorithms
++- Improving visualizations
++- Adding animation features
++- Implementing step-by-step execution
++- Adding more graph types
++
++## License
++
++This project is open source and available under the MIT License.
+diff --git a/algorithms/__pycache__/bfs.cpython-312.pyc b/algorithms/__pycache__/bfs.cpython-312.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..abb286399fc95d314c5ebcab60ba52e76af3c3cc
+GIT binary patch
+literal 1906
+zcmah~PfR0K7=P25&P@L;0+j`JS>F;@wnXSbjj`fJaCZ?GcU3%?CfW?0*LG?<Q{Kz~
+zC4=d~14a_rcz{hzmLp~_n0Vmm)p)T;+{r|v#?vMqSlN>&zc(#yAw*v?@9+2Teed`C
+z=7(4;jG#>otrx~bg#KiU<0dyJNAob*L@G)nl~V&HE**f8FY#p|EpTj4C<V)6S}aRx
+zsVt{u*b9<CvFF%OdsIadRwW{m2$6Gv0XWEss{E;tj#dMS(8{;rDM}R8DvaIKsA=Ij
+zqR?ysU!A%+m%x*yyg@aqP{uRmN{N(-ZYh>#=;84D1<k}|L$yl;n+3xzsW@xEsitGA
+zKrm=yrKPN$P#y<mf^)W>Wu}g`DY0y-V+E_4zpv0LUIN#6Q8R6&q^<alv8q_gc=!>!
+z-t7eE1y!<OlLYSx*Fnt_W;N6D_({F$1@ly?6uhu$Db&j7hDtoK;UgPpCkF*#&ck=~
+z5yuj4LEmT(n&WC9k5+m31cy^Ojav;`Ox|w}m**ZdHC9DOq-%~?WEM}gmMzJVoWLSS
+z7o0#*Iwb^4M>@8~A%`!9{zn28BmX6F9ewyJLaVYPGoL26&Ss)Ni$R=cS(iKf3uj75
+z4uGgbD(FZIQfgp@#UFI!2^iO36A)yBTVHc{M{t5F{}n%n5`yv<BrA-ey+dfupk;g}
+z_5c(NLwRkH=-7Wo?7yO>=W&i2<;Kc?({bOL-%ZlIneu1Mfv=Xrw~4i6(2qZ8nla{!
+zBx|*V+So|pIffJFfk6dBa16t3>+kvS>~O&F2JmGtZ2}*Z+y2M!2mn{Jh?+5|O6W)m
+zGi+ib=Q}WQlPLZnyDp%eP{Pp8lv*Kz9g7l@A!?qO9Y*{$=qVP9wcH{d6Yf-2!KtEW
+zecg_bA&l0^>6~KAz(j!>z%tR!z>Q^v(HNg3GrmemrKDs@gRE7<rr2206OBwzMzu$b
+zAwbdCiG+CJ_PxANE0~1n@g}h-<CrH^4Dgr(Mk}i7iAtqHbkz&#M9UZE4QeJrl(C4i
+zs_98h^EAq~VyrvI_JdF$Y~o2-n^LG>p4?Jr3}9IC+ds)<!6=iYJ#Xulo%HdO0h501
+zAvD>lW@d6eXO35@UJS-eYnw6}FxTey(AChBVbs<0IjK#%@xI#IZg+3(Ew}r^*1H>B
+zwV7X{-5aTm=YNVmQ@im;xXbN1zd3ey?91eu<VJe7M(UBvZnXD{Tc6$9k`AKSjSf7F
+z;(8QspFfBue!qD6{+)YwcBX&6_~M4__FmY2dB1mbXL--wPhNN91DmsVXSe$g;-hZ-
+z(!=<bdi=`v(ysjDbFUo4Q|{;syVLd2iM@sT=<6FZTZR4j$YBT#z4UhsMV>kwM1v!4
+zA9kO<^jH$2;vo`(;t^a1C1ReG$*4v)lVR!eDYfhc^kpxSHA*F*6fnVTyqRcKE5HOQ
+zfF5PFkitI>USZlV$GiqFz?&BJ)Aco?gG{2INyrn8-^n%lEG!vj%xlmc@*KxK4g@*j
+x=p5quenmsSq2W3jJ`_ecajWNk|GoZ01k)YUA9k(1H@@rLd-I!5p0Hit{=W$>208!$
+
+literal 0
+HcmV?d00001
+
+diff --git a/algorithms/__pycache__/dfs.cpython-312.pyc b/algorithms/__pycache__/dfs.cpython-312.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..4b087a93cc0b76a4f485aa270c28fa8511177fb9
+GIT binary patch
+literal 2140
+zcma)7OKclO7@mE4?ZkPud6ZO4(}>20ID&EtRYf2)<rM*`5Q>D%#xu4z*t^#3I*FqI
+zK2-8Li9{}_iG<W1i+TZ0J#yzlsz8^$fW)acSE&Tz0{@I1+lhk2Nb~PJ{{Q>mvp>e;
+zF$Ckai#xe5bcFuko8w_L7e^n$;tnEc2@#3Nd1*<8uaZ{^>XKT}mb8Mtq)UjXR9@*h
+z7H)ruMh&7<l}4$akw@Voqm#&ObtzVs6UN5(u{m1wa#J@f=6ZOMnk=2elXEu~6L>bC
+zb(rPl3i!=JF;5HB_Ds)m>{#qp&T?_VA*DRUZq6y?2~In3YuVV#Q4G@9YzbQ@gp(jl
+zai(OaIn=Q<qh5*G*u=yV=O!!THBgOLEw^Omtqq|V6Vo%3u_xTQg@h8SbHE*{?^v!E
+zDzkPu)UwPh=E9iknaoSs4xypmfKJQph#($W1?CY0Qbkp{s#MjgR@JMKs&NN-(lPIY
+z=3*<7MOy|;-9lRmOqEDkX-o5EU-4BR`I@i$5#PudM80io$ug?Ro6>_Oj)ZDPO|L06
+zl_+1UizuO*lVDB^!+4LfjKd1}j3hvGcrdfpDz&k23=6+3JBu^SDKvJ%%cQ^(WR_*!
+z8L{H<LTm;vP;bp)pMKPYah6wT+G{bjqcwvUdE~eT9y|=D@np8qKM;B9P{1<)dF1(O
+zRsaaM^-tj|kU`6%B;_zd*_9d0vxS|EP~hTb#fVGpE~K3@%G1t;S|$RH$0$uvlBI43
+zh}eUi>2X^Nt?J{<ox;R&)6Obo<&<X?C;)WW4YstdF~4?&-_(Rg;8Ezr$ym1K=FSFb
+z-2EqlfO%ux<lTTz_5_|}w3s*3v{CbAr^K+cW+xhPWW03Kt(t_526GVRQ4CJMf{Lx_
+zL|T{EMRyZ<BM$sZTD}G>{D${@P1!_ZZ>)48!3`gq=s~+yqbs~OPK^^B+6uSe)M#_e
+zp^wKA`b^rCYR0PMN;^g^ayI6sl#$z-Pj}7Eg!+FxQyZR@Q9@Y|v3kONf#*Rn2?=$x
+zSfn-yqc*j&xn+mBiCCzLr@=Tr3Zo?BrbNw!J*`?0Sq{58QqJIsMxn}UB#gD|F^n|J
+zHH@Dqc9*~H7+0F(@9F8BQ=rqO<&y1{rbTOVrQ&^~Y`XPgy3=4zvRG#QAisgRZLPcH
+zwY-xy^X~Oz%j5~*a<_r}RY8H#?Z3Yr*?qCry&VajzkF|Yf6edN^$v`&!07$5tJbwU
+zcW8_T#`(v_7#!~1IyA<AAGvt9cfa?(`pd|ae>3PE-dlUr`$Eun;c?%kgT71mUcNu_
+z)A&n=eOG_&8{M1yx$km4f<}||7>dR_l#Stg{rmGiD0pOy9)UUV&aq+mu=AV@aKei=
+zA%%)dy+l+*lSTMBceKsH&hf2~8saMs;zogdf?sV6HUhgaej+mLIXLU$tcyVYsi0>Q
+zsCQtSR_23qLzQ=f{=v#y!TI6JLNIWy@^;W2_pesw{#3iQi6aE$=@`;_{FOs>w63EI
+zSAroNT$l`o$Dc;EZoQ5)O=rB15?x^=l_E|$l?tJL#Iw2{%JzDwd*vd$eT+8`Q#s*H
+z5^D3}m!w!W{G(it2{XSz0<7VNajo$uz0P<hdF{Hd0I4gIBt4ZiNj>U8($H^c`~Z#D
+k)ug2F4cr~sAE_f)-gm|4TkqlPKMX#+`Q7Kw_^AN@7l>;<2><{9
+
+literal 0
+HcmV?d00001
+
+diff --git a/algorithms/__pycache__/dijkstra.cpython-312.pyc b/algorithms/__pycache__/dijkstra.cpython-312.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..11baf13d22ae6eb8b73855f4e9c6f2bd5f19ba66
+GIT binary patch
+literal 2658
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/algorithms/bfs.py b/algorithms/bfs.py
+new file mode 100644
+index 0000000..a99df42
+--- /dev/null
++++ b/algorithms/bfs.py
+@@ -0,0 +1,51 @@
++"""
++Breadth-First Search (BFS) Algorithm Implementation
++
++This module should contain the BFS algorithm implementation.
++The function should return a dictionary with visualization data.
++"""
++
++import networkx as nx
++from collections import deque
++from typing import Dict, List, Any
++
++def bfs_algorithm(graph: nx.Graph, start_node: int) -> Dict[str, Any]:
++    """
++    Perform Breadth-First Search on the given graph starting from start_node.
++    
++    Args:
++        graph: NetworkX graph object
++        start_node: Starting node for BFS
++    
++    Returns:
++        Dictionary containing:
++        - 'visited_order': List of nodes in the order they were visited
++        - 'tree_edges': List of edges that form the BFS tree
++        - 'distances': Dictionary of distances from start_node to each node
++    
++    Example implementation (replace with your own):
++    """
++    
++    visited = set()
++    visited_order = []
++    tree_edges = []
++    distances = {start_node: 0}
++    queue = deque([start_node])
++    
++    while queue:
++        current = queue.popleft()
++        if current not in visited:
++            visited.add(current)
++            visited_order.append(current)
++            
++            for neighbor in graph.neighbors(current):
++                if neighbor not in visited and neighbor not in queue:
++                    queue.append(neighbor)
++                    tree_edges.append((current, neighbor))
++                    distances[neighbor] = distances[current] + 1
++    
++    return {
++        'visited_order': visited_order,
++        'tree_edges': tree_edges,
++        'distances': distances
++    }
+diff --git a/algorithms/dfs.py b/algorithms/dfs.py
+new file mode 100644
+index 0000000..1d60cd2
+--- /dev/null
++++ b/algorithms/dfs.py
+@@ -0,0 +1,57 @@
++"""
++Depth-First Search (DFS) Algorithm Implementation
++
++This module should contain the DFS algorithm implementation.
++The function should return a dictionary with visualization data.
++"""
++
++import networkx as nx
++from typing import Dict, List, Any
++
++def dfs_algorithm(graph: nx.Graph, start_node: int) -> Dict[str, Any]:
++    """
++    Perform Depth-First Search on the given graph starting from start_node.
++    
++    Args:
++        graph: NetworkX graph object
++        start_node: Starting node for DFS
++    
++    Returns:
++        Dictionary containing:
++        - 'visited_order': List of nodes in the order they were visited
++        - 'tree_edges': List of edges that form the DFS tree
++        - 'discovery_time': Dictionary of discovery times for each node
++        - 'finish_time': Dictionary of finish times for each node
++    
++    Example implementation (replace with your own):
++    """
++    
++    visited = set()
++    visited_order = []
++    tree_edges = []
++    discovery_time = {}
++    finish_time = {}
++    time = [0]  # Use list to make it mutable in nested function
++    
++    def dfs_visit(node):
++        time[0] += 1
++        discovery_time[node] = time[0]
++        visited.add(node)
++        visited_order.append(node)
++        
++        for neighbor in graph.neighbors(node):
++            if neighbor not in visited:
++                tree_edges.append((node, neighbor))
++                dfs_visit(neighbor)
++        
++        time[0] += 1
++        finish_time[node] = time[0]
++    
++    dfs_visit(start_node)
++    
++    return {
++        'visited_order': visited_order,
++        'tree_edges': tree_edges,
++        'discovery_time': discovery_time,
++        'finish_time': finish_time
++    }
+diff --git a/algorithms/dijkstra.py b/algorithms/dijkstra.py
+new file mode 100644
+index 0000000..b6c6c9f
+--- /dev/null
++++ b/algorithms/dijkstra.py
+@@ -0,0 +1,77 @@
++"""
++Dijkstra's Algorithm Implementation
++
++This module should contain Dijkstra's shortest path algorithm implementation.
++The function should return a dictionary with visualization data.
++"""
++
++import networkx as nx
++import heapq
++from typing import Dict, List, Any, Optional
++
++def dijkstra_algorithm(graph: nx.Graph, start_node: int, end_node: int) -> Dict[str, Any]:
++    """
++    Perform Dijkstra's shortest path algorithm on the given graph.
++    
++    Args:
++        graph: NetworkX graph object (should be weighted)
++        start_node: Starting node
++        end_node: Target node
++    
++    Returns:
++        Dictionary containing:
++        - 'shortest_path': List of nodes forming the shortest path
++        - 'path_length': Total length of the shortest path
++        - 'distances': Dictionary of shortest distances from start_node to all nodes
++        - 'previous': Dictionary of previous nodes in shortest path tree
++    
++    Example implementation (replace with your own):
++    """
++    
++    distances = {node: float('infinity') for node in graph.nodes()}
++    distances[start_node] = 0
++    previous = {}
++    visited = set()
++    
++    pq = [(0, start_node)]
++    
++    while pq:
++        current_distance, current_node = heapq.heappop(pq)
++        
++        if current_node in visited:
++            continue
++            
++        visited.add(current_node)
++        
++        if current_node == end_node:
++            break
++        
++        for neighbor in graph.neighbors(current_node):
++            if neighbor not in visited:
++                weight = graph[current_node][neighbor].get('weight', 1)
++                distance = current_distance + weight
++                
++                if distance < distances[neighbor]:
++                    distances[neighbor] = distance
++                    previous[neighbor] = current_node
++                    heapq.heappush(pq, (distance, neighbor))
++    
++    shortest_path = []
++    current = end_node
++    while current is not None:
++        shortest_path.append(current)
++        current = previous.get(current)
++    shortest_path.reverse()
++    
++    if shortest_path[0] != start_node:
++        shortest_path = []
++        path_length = float('infinity')
++    else:
++        path_length = distances[end_node]
++    
++    return {
++        'shortest_path': shortest_path,
++        'path_length': path_length,
++        'distances': distances,
++        'previous': previous
++    }
+diff --git a/app.py b/app.py
+new file mode 100644
+index 0000000..af61c5b
+--- /dev/null
++++ b/app.py
+@@ -0,0 +1,287 @@
++import streamlit as st
++import networkx as nx
++import matplotlib.pyplot as plt
++import numpy as np
++from typing import Dict, List, Tuple, Optional
++import time
++
++try:
++    from algorithms.bfs import bfs_algorithm
++    from algorithms.dfs import dfs_algorithm
++    from algorithms.dijkstra import dijkstra_algorithm
++except ImportError:
++    st.warning("Algorithm modules not found. Please implement the algorithms in the 'algorithms' directory.")
++    bfs_algorithm = None
++    dfs_algorithm = None
++    dijkstra_algorithm = None
++
++class GraphVisualizer:
++    def __init__(self):
++        self.graph = nx.Graph()
++        self.pos = {}
++        self.algorithm_results = {}
++        
++    def create_sample_graph(self, graph_type: str) -> nx.Graph:
++        """Create different types of sample graphs"""
++        if graph_type == "Grid":
++            G = nx.grid_2d_graph(5, 5)
++            G = nx.convert_node_labels_to_integers(G)
++        elif graph_type == "Random":
++            G = nx.erdos_renyi_graph(15, 0.3)
++        elif graph_type == "Complete":
++            G = nx.complete_graph(8)
++        elif graph_type == "Tree":
++            G = nx.balanced_tree(3, 3)
++        else:  # Custom
++            G = nx.Graph()
++            
++        for u, v in G.edges():
++            G[u][v]['weight'] = np.random.randint(1, 10)
++            
++        return G
++    
++    def draw_graph(self, G: nx.Graph, highlighted_nodes: List = None, 
++                   highlighted_edges: List = None, path: List = None):
++        """Draw the graph with optional highlighting"""
++        fig, ax = plt.subplots(figsize=(12, 8))
++        
++        if not self.pos or len(self.pos) != len(G.nodes()):
++            self.pos = nx.spring_layout(G, seed=42)
++        
++        nx.draw_networkx_edges(G, self.pos, edge_color='lightgray', 
++                              width=1, ax=ax)
++        
++        if highlighted_edges:
++            nx.draw_networkx_edges(G, self.pos, edgelist=highlighted_edges,
++                                  edge_color='red', width=3, ax=ax)
++        
++        if path and len(path) > 1:
++            path_edges = [(path[i], path[i+1]) for i in range(len(path)-1)]
++            nx.draw_networkx_edges(G, self.pos, edgelist=path_edges,
++                                  edge_color='blue', width=4, ax=ax)
++        
++        nx.draw_networkx_nodes(G, self.pos, node_color='lightblue',
++                              node_size=500, ax=ax)
++        
++        if highlighted_nodes:
++            nx.draw_networkx_nodes(G, self.pos, nodelist=highlighted_nodes,
++                                  node_color='orange', node_size=600, ax=ax)
++        
++        if path:
++            nx.draw_networkx_nodes(G, self.pos, nodelist=path,
++                                  node_color='green', node_size=700, ax=ax)
++        
++        nx.draw_networkx_labels(G, self.pos, ax=ax)
++        
++        if nx.is_weighted(G):
++            edge_labels = nx.get_edge_attributes(G, 'weight')
++            nx.draw_networkx_edge_labels(G, self.pos, edge_labels, ax=ax)
++        
++        ax.set_title("Graph Visualization")
++        ax.axis('off')
++        plt.tight_layout()
++        return fig
++
++def main():
++    st.set_page_config(page_title="Graph Algorithm Visualizer", layout="wide")
++    
++    st.title("🔍 Graph Algorithm Visualizer")
++    st.markdown("Visualize BFS, DFS, and Dijkstra's algorithms on different graph structures")
++    
++    if 'visualizer' not in st.session_state:
++        st.session_state.visualizer = GraphVisualizer()
++    
++    visualizer = st.session_state.visualizer
++    
++    with st.sidebar:
++        st.header("Graph Configuration")
++        
++        graph_type = st.selectbox(
++            "Select Graph Type:",
++            ["Grid", "Random", "Complete", "Tree", "Custom"]
++        )
++        
++        if st.button("Generate New Graph"):
++            visualizer.graph = visualizer.create_sample_graph(graph_type)
++            visualizer.pos = {}  # Reset positions
++            st.rerun()
++        
++        st.divider()
++        
++        st.header("Algorithm Selection")
++        algorithm = st.selectbox(
++            "Choose Algorithm:",
++            ["BFS (Breadth-First Search)", "DFS (Depth-First Search)", "Dijkstra's Algorithm"]
++        )
++        
++        if len(visualizer.graph.nodes()) > 0:
++            nodes = list(visualizer.graph.nodes())
++            
++            start_node = st.selectbox("Start Node:", nodes, index=0)
++            
++            if algorithm == "Dijkstra's Algorithm":
++                end_node = st.selectbox("End Node:", nodes, 
++                                      index=min(1, len(nodes)-1))
++            else:
++                end_node = None
++        else:
++            start_node = None
++            end_node = None
++        
++        run_algorithm = st.button("Run Algorithm", type="primary")
++        
++        st.divider()
++        
++        if graph_type == "Custom":
++            st.header("Custom Graph Builder")
++            
++            col1, col2 = st.columns(2)
++            with col1:
++                node_to_add = st.number_input("Add Node:", min_value=0, value=0)
++                if st.button("Add Node"):
++                    visualizer.graph.add_node(node_to_add)
++                    st.rerun()
++            
++            with col2:
++                if len(visualizer.graph.nodes()) >= 2:
++                    nodes = list(visualizer.graph.nodes())
++                    edge_start = st.selectbox("Edge Start:", nodes, key="edge_start")
++                    edge_end = st.selectbox("Edge End:", nodes, key="edge_end")
++                    edge_weight = st.number_input("Weight:", min_value=1, value=1)
++                    
++                    if st.button("Add Edge"):
++                        visualizer.graph.add_edge(edge_start, edge_end, weight=edge_weight)
++                        st.rerun()
++    
++    col1, col2 = st.columns([2, 1])
++    
++    with col1:
++        st.header("Graph Visualization")
++        
++        if len(visualizer.graph.nodes()) == 0:
++            st.info("Please generate a graph to start visualization")
++            visualizer.graph = visualizer.create_sample_graph("Grid")
++        
++        if len(visualizer.graph.nodes()) > 0:
++            fig = visualizer.draw_graph(visualizer.graph)
++            st.pyplot(fig)
++            plt.close()
++        
++        if run_algorithm and start_node is not None:
++            st.header("Algorithm Execution")
++            
++            if algorithm == "BFS (Breadth-First Search)":
++                if bfs_algorithm:
++                    with st.spinner("Running BFS..."):
++                        result = bfs_algorithm(visualizer.graph, start_node)
++                        st.success("BFS completed!")
++                        
++                        if 'visited_order' in result:
++                            st.write("**Visited nodes in order:**", result['visited_order'])
++                        if 'tree_edges' in result:
++                            fig = visualizer.draw_graph(
++                                visualizer.graph, 
++                                highlighted_nodes=result.get('visited_order', []),
++                                highlighted_edges=result.get('tree_edges', [])
++                            )
++                            st.pyplot(fig)
++                            plt.close()
++                else:
++                    st.error("BFS algorithm not implemented. Please implement `bfs_algorithm` in `algorithms/bfs.py`")
++            
++            elif algorithm == "DFS (Depth-First Search)":
++                if dfs_algorithm:
++                    with st.spinner("Running DFS..."):
++                        result = dfs_algorithm(visualizer.graph, start_node)
++                        st.success("DFS completed!")
++                        
++                        if 'visited_order' in result:
++                            st.write("**Visited nodes in order:**", result['visited_order'])
++                        if 'tree_edges' in result:
++                            fig = visualizer.draw_graph(
++                                visualizer.graph,
++                                highlighted_nodes=result.get('visited_order', []),
++                                highlighted_edges=result.get('tree_edges', [])
++                            )
++                            st.pyplot(fig)
++                            plt.close()
++                else:
++                    st.error("DFS algorithm not implemented. Please implement `dfs_algorithm` in `algorithms/dfs.py`")
++            
++            elif algorithm == "Dijkstra's Algorithm":
++                if dijkstra_algorithm and end_node is not None:
++                    with st.spinner("Running Dijkstra's Algorithm..."):
++                        result = dijkstra_algorithm(visualizer.graph, start_node, end_node)
++                        st.success("Dijkstra's Algorithm completed!")
++                        
++                        if 'shortest_path' in result:
++                            st.write("**Shortest path:**", result['shortest_path'])
++                            st.write("**Path length:**", result.get('path_length', 'N/A'))
++                        if 'distances' in result:
++                            st.write("**All distances from start node:**")
++                            for node, dist in result['distances'].items():
++                                st.write(f"Node {node}: {dist}")
++                        
++                        if 'shortest_path' in result:
++                            fig = visualizer.draw_graph(
++                                visualizer.graph,
++                                path=result['shortest_path']
++                            )
++                            st.pyplot(fig)
++                            plt.close()
++                else:
++                    if not dijkstra_algorithm:
++                        st.error("Dijkstra's algorithm not implemented. Please implement `dijkstra_algorithm` in `algorithms/dijkstra.py`")
++                    else:
++                        st.error("Please select both start and end nodes for Dijkstra's algorithm")
++    
++    with col2:
++        st.header("Graph Information")
++        
++        if len(visualizer.graph.nodes()) > 0:
++            st.metric("Number of Nodes", len(visualizer.graph.nodes()))
++            st.metric("Number of Edges", len(visualizer.graph.edges()))
++            st.metric("Graph Type", "Weighted" if nx.is_weighted(visualizer.graph) else "Unweighted")
++            
++            st.subheader("Adjacency List")
++            for node in sorted(visualizer.graph.nodes()):
++                neighbors = list(visualizer.graph.neighbors(node))
++                if neighbors:
++                    st.write(f"**Node {node}:** {neighbors}")
++                else:
++                    st.write(f"**Node {node}:** No connections")
++        
++        st.header("Algorithm Information")
++        
++        if algorithm == "BFS (Breadth-First Search)":
++            st.markdown("""
++            **Breadth-First Search (BFS)**
++            - Explores nodes level by level
++            - Uses a queue data structure
++            - Finds shortest path in unweighted graphs
++            - Time complexity: O(V + E)
++            - Space complexity: O(V)
++            """)
++        
++        elif algorithm == "DFS (Depth-First Search)":
++            st.markdown("""
++            **Depth-First Search (DFS)**
++            - Explores as far as possible along each branch
++            - Uses a stack data structure (or recursion)
++            - Good for topological sorting, cycle detection
++            - Time complexity: O(V + E)
++            - Space complexity: O(V)
++            """)
++        
++        elif algorithm == "Dijkstra's Algorithm":
++            st.markdown("""
++            **Dijkstra's Algorithm**
++            - Finds shortest paths from source to all vertices
++            - Works with non-negative edge weights
++            - Uses a priority queue
++            - Time complexity: O((V + E) log V)
++            - Space complexity: O(V)
++            """)
++
++if __name__ == "__main__":
++    main()
+diff --git a/requirements.txt b/requirements.txt
+new file mode 100644
+index 0000000..63897d6
+--- /dev/null
++++ b/requirements.txt
+@@ -0,0 +1,4 @@
++streamlit>=1.28.0
++networkx>=3.0
++matplotlib>=3.7.0
++numpy>=1.24.0
+-- 
+2.34.1
+
